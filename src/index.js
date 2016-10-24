@@ -1,6 +1,5 @@
 import React from 'react'
 
-class AuthContext = ({ children }) => {
+export const AuthContext = ({ children }) => {
   return (<p>auth context...</p>)
 }
-export AuthContext
