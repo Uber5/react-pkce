@@ -1,6 +1,6 @@
 {
   "name": "react-u5auth",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "React components to authenticate via U5auth (OAuth2)",
   "main": "dist/index.js",
   "scripts": {
