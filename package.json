@@ -25,6 +25,9 @@
     "rimraf": "2.5.4",
     "source-map-support": "0.4.5"
   },
+  "files": [
+    "./dist"
+  ],
   "babel": {
     "presets": [
       "es2015",
