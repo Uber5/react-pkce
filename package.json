@@ -12,6 +12,10 @@
   },
   "author": "Chris Oloff <chris@uber5.com> (http://about.uber5.com/)",
   "license": "MIT",
+  "repository" :
+  { "type" : "git",
+    "url" : "https://github.com/Uber5/react-u5auth.git"
+  },
   "dependencies": {
     "babel-runtime": "^6.11",
     "react": "^15.0.0 || ^16.0.0"
