@@ -1,5 +1,6 @@
 import React from 'react'
 
-export const AuthContext = ({ children }) => {
-  return (<p>auth context...</p>)
-}
+import { AuthContext } from './components/auth-context'
+import { authenticated } from './authenticated'
+
+export { AuthContext, authenticated }
