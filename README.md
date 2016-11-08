@@ -44,6 +44,24 @@ const SomeComponent = () => (<p>This is some component</p>)
 const ProtectedComponent = authenticated()(<SomeComponent />)
 ```
 
+## Using the `access_token`
+
+A protected component isn't too valuable on its own, you may need an access
+token when speaking to an API. Anywhere the access token can be accessed like
+this:
+
+```
+import { getLocalToken } from 'react-u5auth'
+
+...
+const token = getLocalToken()
+...
+```
+
+Please note: There is something fishy here about the `access_token`
+being kept in global state. See
+[this issue](https://github.com/Uber5/react-u5auth/issues/3).
+
 # Status
 
 It's fully functional, but does not deal with token expiry and/or certain error conditions yet. See the
