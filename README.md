@@ -40,8 +40,16 @@ Now, the higher-order function `authenticated` can be used to ensure a valid `ac
 ```js
 import { authenticated } from 'react-u5auth'
 
-const SomeComponent = () => (<p>This is some component</p>)
-const ProtectedComponent = authenticated()(<SomeComponent />)
+class SomeComponent extends React.Component {
+  render() {
+    return <p>Some component that needs an authenticated user...</p>
+  }
+}
+
+const ProtectedComponent = authenticated()(SomeComponent)
+
+const SomeOtherComponent = () => (<p>This is some other component</p>)
+const ProtectedComponent = authenticated()(() => (<SomeOtherComponent />))
 ```
 
 ## Using the `access_token`

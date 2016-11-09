@@ -2,7 +2,7 @@ import React from 'react'
 import { getLocalToken } from './local-token'
 import contextTypes from './context-types'
 
-export const authenticated = () => component => {
+export const authenticated = () => Component => {
   function hashed(o) {
     return Object
       .getOwnPropertyNames(o)
@@ -16,7 +16,7 @@ export const authenticated = () => component => {
       redirect_uri: window.location
     }
     const url = `${ provider }/authorize?${ hashed(query) }`
-    window.location.assign(url)
+    window.location.replace(url)
   }
   class Authed extends React.Component {
     render() {
@@ -26,8 +26,7 @@ export const authenticated = () => component => {
         authorize(provider, clientId)
         return (<p>Logging in...</p>)
       } else {
-        console.log('access_token', token)
-        return component
+        return <Component {...this.props} />
       }
     }
   }
