@@ -2,13 +2,14 @@ import React from 'react'
 import { getLocalToken } from './local-token'
 import contextTypes from './context-types'
 
+export function hashed(o) {
+  return Object
+    .getOwnPropertyNames(o)
+    .map(prop => `${ prop }=${ encodeURIComponent(o[prop]) }`)
+    .join('&')
+}
+
 export const authenticated = () => Component => {
-  function hashed(o) {
-    return Object
-      .getOwnPropertyNames(o)
-      .map(prop => `${ prop }=${ encodeURIComponent(o[prop]) }`)
-      .join('&')
-  }
   function authorize(provider, clientId) {
     const query = {
       client_id: clientId,
