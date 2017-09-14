@@ -1,8 +1,9 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 
 const contextTypes = {
-  provider: React.PropTypes.string.isRequired,
-  clientId: React.PropTypes.string.isRequired
+  provider: PropTypes.string.isRequired,
+  clientId: PropTypes.string.isRequired
 }
 
 export default contextTypes
