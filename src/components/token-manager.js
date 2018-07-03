@@ -8,6 +8,13 @@ class TokenManager extends React.Component {
 
   state = { refreshing: false }
 
+  handleTokenUpdate(token) {
+    setLocalToken(token);
+    if (this.props.onTokenUpdate) {
+      this.props.onTokenUpdate(token);
+    }
+  }
+
   refresh = () => {
     console.log('should refresh access_token...')
     const { provider, clientId } = this.context
@@ -59,7 +66,7 @@ class TokenManager extends React.Component {
       if (token && expires_in) {
         console.log('got new token', token, expires_in)
         this.clearInterval()
-        setLocalToken(token)
+        this.handleTokenUpdate(token);
         this.setRefreshTimer(expires_in)
         this.setState({ refreshing: false })
       } else {
@@ -116,7 +123,7 @@ class TokenManager extends React.Component {
     const results = getHashValues()
 
     if (results.access_token) {
-      setLocalToken(results.access_token)
+      this.handleTokenUpdate(results.access_token);
       // We can refresh only if we get `expires_in` from the server
       // and, if state contains 'refreshing', then we are inside the
       // iframe, and therefore must break recursion
