@@ -1,5 +1,3 @@
-import React from 'react'
-
 import { AuthContext } from './components/auth-context'
 import { authenticated } from './authenticated'
 import { getLocalToken } from './local-token'
