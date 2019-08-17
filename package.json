@@ -9,7 +9,7 @@
     "prepublish": "npm run clean && npm run build",
     "clean": "rimraf dist",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "sample": "webpack-dev-server --port 3001 --config ./sample/webpack.config.js --mode development"
+    "sample": "webpack-dev-server --port 3001 --config ./sample/webpack.config.js"
   },
   "author": "Chris Oloff <chris@uber5.com> (http://about.uber5.com/)",
   "license": "MIT",
@@ -31,8 +31,9 @@
     "babel-preset-es2015": "6.24.1",
     "babel-preset-react": "6.16.0",
     "babel-preset-stage-2": "6.24.1",
-    "react": "^16.4.1",
-    "react-dom": "16.4.1",
+    "prop-types": "^15.7.2",
+    "react": "^16.9.0",
+    "react-dom": "^16.9.0",
     "rimraf": "2.5.4",
     "source-map-support": "0.4.5",
     "webpack": "4.16.3",
