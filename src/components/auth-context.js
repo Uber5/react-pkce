@@ -18,14 +18,19 @@ class Debug extends React.Component {
   state = { open: true }
   render() {
     const { contextProps, contextState, hashValues } = this.props
+    // we remove the loggingInIndicator from the props we show, as JSON.stringify fails
+    // otherwise
+    const { loggingInIndicator, ...otherContextProps } = contextProps
+
     if (!this.state.open) {
       return null
     }
+    
     return (
       <div style={ styles.debug }>
         <button onClick={() => this.setState({ open: false })}>close</button>
         <ul>
-          <li>contextProps={JSON.stringify(contextProps)}</li>
+          <li>contextProps={JSON.stringify(otherContextProps)}</li>
           <li>contextState={JSON.stringify(contextState)}</li>
           <li>hashValues={JSON.stringify(hashValues)}</li>
         </ul>

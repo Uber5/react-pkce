@@ -1,5 +1,5 @@
 import React from 'react'
-import { setLocalToken, getLocalToken } from '../local-token'
+import { setLocalToken, getLocalToken, getLocalExpiresAt } from '../local-token'
 import contextTypes from '../context-types'
 import { hashed } from '../authenticated'
 import { getHashValues } from '../lib/utils'
@@ -8,8 +8,8 @@ class TokenManager extends React.Component {
 
   state = { refreshing: false }
 
-  handleTokenUpdate(token) {
-    setLocalToken(token)
+  handleTokenUpdate(token, expires_in) {
+    setLocalToken(token, expires_in)
     if (this.props.onTokenUpdate) {
       this.props.onTokenUpdate(token)
     }
@@ -66,7 +66,7 @@ class TokenManager extends React.Component {
       if (token && expires_in) {
         console.log('got new token', token, expires_in)
         this.clearInterval()
-        this.handleTokenUpdate(token)
+        this.handleTokenUpdate(token, expires_in)
         this.setRefreshTimer(expires_in)
         this.setState({ refreshing: false })
       } else {
@@ -105,11 +105,22 @@ class TokenManager extends React.Component {
 
   setRefreshTimer = expires_in => {
 
+    console.log('setRefreshTimer, expires_in', expires_in)
+    
     // 60 seconds before expiry
     const delay = this.getDelay(expires_in)
     this.clearTimer()
     this.setTimer(Math.max(delay, 4000))
 
+  }
+
+  componentDidMount() {
+    let localExpiresAt
+    if (getLocalToken() && (localExpiresAt = getLocalExpiresAt())) {
+      this.setRefreshTimer(
+        (localExpiresAt.getTime() - new Date().getTime()) / 1000
+      )
+    }
   }
 
   componentWillUnmount() {
@@ -123,17 +134,17 @@ class TokenManager extends React.Component {
     const results = getHashValues()
 
     if (results.access_token) {
-      this.handleTokenUpdate(results.access_token)
+      const { expires_in, state, access_token } = results
+      this.handleTokenUpdate(access_token, expires_in)
       // We can refresh only if we get `expires_in` from the server
       // and, if state contains 'refreshing', then we are inside the
       // iframe, and therefore must break recursion
-      const { expires_in, state } = results
       if (state && state.match(/^refreshing/)) {
         isRefreshingInIframe = true
       }
       if (expires_in && !isRefreshingInIframe) {
-        // results.expires_in = "75" // for testing
-        this.setRefreshTimer(results.expires_in)
+        // expires_in = "75" // for testing
+        this.setRefreshTimer(expires_in)
       }
       window.location.hash = ""
     }
