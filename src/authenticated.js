@@ -23,9 +23,9 @@ export const authenticated = () => Component => {
     render() {
       const token = getLocalToken()
       if (!token) {
-        const { clientId, provider } = this.context
+        const { clientId, provider, loggingInIndicator } = this.context
         authorize(provider, clientId)
-        return (<p>Logging in...</p>)
+        return (loggingInIndicator || <p>Logging in...</p>)
       } else {
         return <Component {...this.props} />
       }

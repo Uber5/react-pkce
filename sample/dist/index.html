@@ -1,0 +1,42 @@
+<!doctype html>
+<html>
+  <head>
+    <title>React U5Auth Demo</title>
+    <style>
+      p {
+        text-align: 'center';
+        width: 900px;
+        margin: 100px auto;
+        background-color: 'green';
+      }
+      .spinner {
+        width: 40px;
+        height: 40px;
+        margin: 100px auto;
+        background-color: #333;
+
+        border-radius: 100%;  
+        animation: sk-scaleout 1.0s infinite ease-in-out;
+      }
+
+      @-webkit-keyframes sk-scaleout {
+        100% {
+          opacity: 0;
+        }
+      }
+
+      @keyframes sk-scaleout {
+        0% { 
+          transform: scale(0);
+        } 100% {
+          transform: scale(1.0);
+          opacity: 0;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script src="./bundle.js"></script>
+  </body>
+</html>
