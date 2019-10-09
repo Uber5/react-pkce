@@ -10,12 +10,17 @@ export function hashed(o) {
 }
 
 export const authenticated = () => Component => {
-  function authorize(provider, clientId) {
-    const query = {
+  function authorize(provider, pkce, clientId) {
+    let query = {
       client_id: clientId,
-      response_type: 'token',
+      response_type: 'code',
       redirect_uri: window.location
     }
+    if(pkce == true) {
+      query.code_challenge = "ieinufnw0nfh84hfnneb0ub4bw"
+      query.code_challenge_method = "S256"
+    }
+    
     const url = `${ provider }/authorize?${ hashed(query) }`
     window.location.replace(url)
   }
@@ -23,8 +28,8 @@ export const authenticated = () => Component => {
     render() {
       const token = getLocalToken()
       if (!token) {
-        const { clientId, provider, loggingInIndicator } = this.context
-        authorize(provider, clientId)
+        const { clientId, pkce, provider, loggingInIndicator } = this.context
+        authorize(provider, pkce, clientId)
         return (loggingInIndicator || <p>Logging in...</p>)
       } else {
         return <Component {...this.props} />

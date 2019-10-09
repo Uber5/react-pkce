@@ -17,7 +17,7 @@ class TokenManager extends React.Component {
 
   refresh = () => {
     console.log('should refresh access_token...')
-    const { provider, clientId } = this.context
+    const { provider, clientSecret, clientId } = this.context
     const state = 'refreshing-' + Math.random()
     const query = {
       client_id: clientId,
