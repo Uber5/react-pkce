@@ -3,6 +3,8 @@ import { setLocalToken, getLocalToken, getLocalExpiresAt } from '../local-token'
 import contextTypes from '../context-types'
 import { hashed } from '../authenticated'
 import { getHashValues } from '../lib/utils'
+import crypto from 'crypto'
+import {base64URLEncode, sha256} from './base64UrlEncode'
 
 class TokenManager extends React.Component {
 
@@ -17,14 +19,15 @@ class TokenManager extends React.Component {
 
   refresh = () => {
     console.log('should refresh access_token...')
-    const { provider, clientSecret, clientId } = this.context
+    const { provider, clientId } = this.context
     const state = 'refreshing-' + Math.random()
-    const query = {
+    let query = {
       client_id: clientId,
       response_type: 'token',
       redirect_uri: window.location,
       state
     }
+    
     const url = `${ provider }/authorize?${ hashed(query) }`
     this.setState({ refreshing: true, url, state })
     this.setInterval()

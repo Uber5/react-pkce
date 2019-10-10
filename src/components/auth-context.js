@@ -41,8 +41,8 @@ class Debug extends React.Component {
 
 export class AuthContext extends React.Component {
   getChildContext() {
-    const { provider, clientId, clientSecret, loggingInIndicator } = this.props
-    return { provider, clientId, clientSecret, loggingInIndicator }
+    const { provider, clientId, pkce, clientSecret, loggingInIndicator } = this.props
+    return { provider, clientId, pkce, clientSecret, loggingInIndicator }
   }
 
   isDebugEnabled = () => {
