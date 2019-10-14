@@ -1,11 +1,8 @@
 import React from 'react'
 import { setLocalToken, getLocalToken, getLocalExpiresAt } from '../local-token'
 import contextTypes from '../context-types'
-import { hashed } from '../authenticated'
+import {hashed}  from '../lib/hashed'
 import { getHashValues } from '../lib/utils'
-import crypto from 'crypto'
-import {base64URLEncode, sha256} from './base64UrlEncode'
-
 class TokenManager extends React.Component {
 
   state = { refreshing: false }
