@@ -3,19 +3,17 @@ import { authContext as _authContext } from './auth-context'
 import crypto from 'crypto'
 import { getLocalToken } from './local-token'
 import {base64URLEncode, sha256} from './sha256-base64-url-encode'
-
-export function hashed(o) {
-  return Object
-    .getOwnPropertyNames(o)
-    .map(prop => `${ prop }=${ encodeURIComponent(o[prop]) }`)
-    .join('&')
-}
+import {hashed, reverseHashed} from './lib/hashed'
 
 
 
-export const  Authenticated = ({ children }) => {
+export const  Authenticated = ({props, children }) => {
+  const authContext = useContext(_authContext)
+  const [ token, setToken ] = useState(null)
 
-  function authorize(provider, pkce, clientId) {
+  function authorize({provider, pkce, clientId}) {
+    const queryArray = reverseHashed(window.location)
+    console.log('query array ', queryArray)
     let query = {
       client_id: clientId,
       response_type: 'token',
@@ -29,30 +27,29 @@ export const  Authenticated = ({ children }) => {
       query.code_challenge_method = "S256"
       query.response_type = "code"
     }
-    console.log("url is ", url)
+    console.log("query is ", query)
+    console.log('hashed query ', hashed(query))
     const url = `${ provider }/authorize?${ hashed(query) }`
     window.location.replace(url)
   }
   
-  const authContext = useContext(_authContext)
-  const {clientId, clientSecret, pkce, provider} = authContext
-  console.log('this is the auth context ', authContext)
-  const [ token, setToken ] = useState(null)
   useEffect(() => {
+    
     if (!token) {
+      
       const codeFromUrlHashValues = null // TODO
       if (codeFromUrlHashValues) {
         const token = 12345 // TODO: look up token via fetch
         setToken(token)
       }
       // need to authorize
-      const authUrl = provider + "/login" // TODO: create authUrl
-      window.location = authUrl
+      const url = `${ authContext.provider}/authorize?${ hashed(query) }`
+      window.location.replace(url)
     }
   }, [ ])
-
-  if (!token) {
-    // authorize(authContext)
+  const currentToken = getLocalToken()
+  if (!currentToken) {
+    authorize(authContext)
     return <p>Logging in...</p>
   } else {
     return children({ token })
