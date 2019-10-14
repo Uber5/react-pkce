@@ -1,13 +1,10 @@
 import React from 'react'
-
-const authContext = React.createContext({
-  clientId : "",
-  provider : "",
-  clientSecret : "",
-  pkce : false,
-  authenticate : () => {
-
-  }
+export const authContext = React.createContext({
+  
 })
 
-export default authContext;
+const { Provider } = authContext
+export default ({ clientId, pkce, clientSecret, provider, ...props }) => {
+  // ok(clientId, 'clientId is required')
+  return <Provider value={{ clientId, pkce, clientSecret, provider}} {...props} />
+}
