@@ -2,7 +2,7 @@ import React from 'react'
 import contextTypes from '../context-types'
 import { getHashValues } from '../lib/utils'
 
-import TokenManager from './token-manager'
+import TokenManager from './token-manager(legacy)'
 
 const styles = {
   debug: {
