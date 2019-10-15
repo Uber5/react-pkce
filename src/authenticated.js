@@ -1,19 +1,18 @@
 import React, {useContext, useEffect, useState} from 'react'
 import { authContext as _authContext } from './auth-context'
 import crypto from 'crypto'
-import { getLocalToken } from './local-token'
 import {base64URLEncode, sha256} from './sha256-base64-url-encode'
-import {hashed, reverseHashed} from './lib/hashed'
-
+import {hashed} from './lib/hashed'
+import {getHashValues} from './lib/utils'
+import CodeManager from './components/code-manager'
 
 
 export const  Authenticated = ({props, children }) => {
   const authContext = useContext(_authContext)
-  const [ token, setToken ] = useState(null)
+  const [ code, setCode] = useState(null)
 
   function authorize({provider, pkce, clientId}) {
-    const queryArray = reverseHashed(window.location)
-    console.log('query array ', queryArray)
+    
     let query = {
       client_id: clientId,
       response_type: 'token',
@@ -27,33 +26,37 @@ export const  Authenticated = ({props, children }) => {
       query.code_challenge_method = "S256"
       query.response_type = "code"
     }
-    console.log("query is ", query)
-    console.log('hashed query ', hashed(query))
     const url = `${ provider }/authorize?${ hashed(query) }`
     window.location.replace(url)
   }
   
   useEffect(() => {
-    
-    if (!token) {
-      
+    if (!code) {
+      const hashedUri = getHashValues()
+      console.log('query array ', hashedUri)
       const codeFromUrlHashValues = null // TODO
       if (codeFromUrlHashValues) {
-        const token = 12345 // TODO: look up token via fetch
-        setToken(token)
+        const _code = 12345 // TODO: look up token via fetch
+        setCode(_code)
       }
       // need to authorize
-      const url = `${ authContext.provider}/authorize?${ hashed(query) }`
-      window.location.replace(url)
+      authorize(authContext)
     }
-  }, [ ])
-  const currentToken = getLocalToken()
-  if (!currentToken) {
-    authorize(authContext)
-    return <p>Logging in...</p>
-  } else {
-    return children({ token })
-  }
+  }, [code])
+
+  return <CodeManager code={code} state={state}>
+    {
+      ({token}) => {
+        if (!token) {
+          // authorize(authContext)
+          return <p>Logging in...</p>
+        } else {
+          return children({ token })
+        }
+      }
+    }
+  </CodeManager>
+  
 }
 
 
