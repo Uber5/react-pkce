@@ -4,6 +4,7 @@
   "description": "React components to authenticate via U5auth (OAuth2)",
   "main": "dist/index.js",
   "scripts": {
+    "start": "react-scripts start",
     "build": "babel src --out-dir dist --source-maps",
     "build:watch": "npm run build -- --watch",
     "prepublish": "npm run clean && npm run build",
@@ -17,7 +18,9 @@
     "type": "git",
     "url": "https://github.com/Uber5/react-u5auth.git"
   },
-  "dependencies": {},
+  "dependencies": {
+    "react-router-dom": "^5.1.2"
+  },
   "peerDependencies": {
     "react": "^15.0.0 || ^16.0.0",
     "prop-types": "^15.0.0"
@@ -32,11 +35,9 @@
     "prop-types": "^15.7.2",
     "react": "^16.9.0",
     "react-dom": "^16.9.0",
+    "react-scripts": "^3.2.0",
     "rimraf": "2.5.4",
-    "source-map-support": "0.4.5",
-    "webpack": "^4.39.2",
-    "webpack-cli": "^3.3.6",
-    "webpack-dev-server": "^3.8.0"
+    "source-map-support": "0.4.5"
   },
   "babel": {
     "presets": [
@@ -45,6 +46,18 @@
     ],
     "plugins": [
       "@babel/plugin-proposal-class-properties"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
     ]
   }
 }

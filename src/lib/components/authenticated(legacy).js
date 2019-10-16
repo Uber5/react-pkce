@@ -1,8 +1,8 @@
 import React from 'react'
-import { getLocalToken } from './local-token'
-import contextTypes from './context-types'
+import { getLocalToken } from '../../local-token'
+import contextTypes from '../../context-types'
 import crypto from 'crypto'
-import {base64URLEncode, sha256} from './sha256-base64-url-encode'
+import {base64URLEncode, sha256} from '../../helpers/sha256-base64-url-encode'
 
 export function hashed(o) {
   return Object

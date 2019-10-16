@@ -1,8 +1,8 @@
 import React from 'react'
-import contextTypes from '../context-types'
-import { getHashValues } from '../lib/utils'
+import contextTypes from '../../context-types'
+import { getHashValues } from '../../helpers/utils'
 
-import TokenManager from './token-manager(legacy)'
+import TokenManager from '../../components/token-manager(legacy)'
 
 const styles = {
   debug: {

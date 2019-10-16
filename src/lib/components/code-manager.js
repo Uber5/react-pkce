@@ -1,8 +1,8 @@
 import React, {useEffect, useContext, useState} from 'react'
 import { authContext as _authContext } from './auth-context'
-import {} from '../sha256-base64-url-encode'
-import { setLocalToken, getLocalToken, getLocalExpiresAt } from '../local-token'
-import {hashed}  from '../lib/hashed'
+import {} from '../../helpers/sha256-base64-url-encode'
+import { setLocalToken, getLocalToken, getLocalExpiresAt } from '../../local-token'
+import {hashed}  from '../../helpers/hashed'
 
 const CodeManager = ({props, children }) => {
   const authContext = useContext(_authContext)
@@ -31,7 +31,7 @@ const CodeManager = ({props, children }) => {
     })
   },[])
 
-  return children({token})
+  return children({token: 123456})
 }
 
 export default CodeManager
