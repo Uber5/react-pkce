@@ -7,10 +7,10 @@ import {getHashValues} from '../../helpers/utils'
 import CodeManager from './code-manager'
 
 
-export const  Authenticated = ({props, children }) => {
+export const  Authenticated = ({children }) => {
   const authContext = useContext(_authContext)
   const [ code, setCode] = useState(null)
-
+  const codeFromUrlHashValues = getHashValues()
   function authorize({provider, pkce, clientId}) {
     
     let query = {
@@ -19,7 +19,7 @@ export const  Authenticated = ({props, children }) => {
       redirect_uri: window.location
     }
     
-    if(pkce === true) {
+    if(pkce) {
       const code_verifier = base64URLEncode(crypto.randomBytes(32))
       sessionStorage.setItem("code_verifier",code_verifier)
       query.code_challenge = base64URLEncode(sha256(code_verifier))
@@ -32,30 +32,49 @@ export const  Authenticated = ({props, children }) => {
   
   useEffect(() => {
     if (!code) {
-      const hashedUri = getHashValues()
-      console.log('query array ', hashedUri)
-      const codeFromUrlHashValues = null // TODO
+      const codeFromUrlHashValues = getHashValues() // TODO
       if (codeFromUrlHashValues) {
-        const _code = 12345 // TODO: look up token via fetch
-        setCode(_code)
-      }
-      // need to authorize
-      authorize(authContext)
-    }
-  }, [code])
 
-  return <CodeManager code={code} state={"state 1234456778"}>
-    {
-      ({token}) => {
-        if (!token) {
-          // authorize(authContext)
-          return <p>Logging in...</p>
-        } else {
-          return children({ token })
+        let body = {
+          clientSecret ,
+          clientId,
+          code : code, 
+          grant_type: "token",
+          state : state
         }
+        
+        if (pkce) {
+          const code_verifier = sessionStorage.getItem('code_verifier')
+          body.grant_type = "authorization_code"
+          body.code_verifier = code_verifier
+        }
+        fetch(`${provider}/token`,{
+          method: "POST",
+          body : JSON.stringify(body)
+        })
+        .then((response) => {
+          const expires_in = new Date("2020-11-10") //TODO: will get it from the reponse
+          console.log('this is the response ', response)
+          setLocalToken(token,expires_in)
+          return children({token})
+        })
+        .catch((err) => new Error('this is the error ', err))
+        
+        // const _code = // TODO: look up token via fetch
+        // setCode(codeFromUrlHashValues)
+      } else {
+        // need to authorize
+        authorize(authContext)
       }
     }
-  </CodeManager>
+  }, [ code ])
+
+  if (!token) {
+    return <p>Logging in...</p>
+  } else {
+    return children({ token })
+  }
+      
   
 }
 
