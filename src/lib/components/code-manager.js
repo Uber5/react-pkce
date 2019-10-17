@@ -2,7 +2,6 @@ import React, {useEffect, useContext, useState} from 'react'
 import { authContext as _authContext } from './auth-context'
 import {} from '../../helpers/sha256-base64-url-encode'
 import { setLocalToken, getLocalToken, getLocalExpiresAt } from '../../local-token'
-import {hashed}  from '../../helpers/hashed'
 
 const CodeManager = ({code,state,children }) => {
   console.log('props ', code)

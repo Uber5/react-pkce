@@ -4,13 +4,12 @@ import crypto from 'crypto'
 import {base64URLEncode, sha256} from '../../helpers/sha256-base64-url-encode'
 import {hashed} from '../../helpers/hashed'
 import {getHashValues} from '../../helpers/utils'
-import CodeManager from './code-manager'
 
 
 export const  Authenticated = ({children }) => {
   const authContext = useContext(_authContext)
   const [ code, setCode] = useState(null)
-  const codeFromUrlHashValues = getHashValues()
+  const [token, setToken] = useState(null)
   function authorize({provider, pkce, clientId}) {
     
     let query = {
@@ -33,14 +32,14 @@ export const  Authenticated = ({children }) => {
   useEffect(() => {
     if (!code) {
       const codeFromUrlHashValues = getHashValues() // TODO
+      const {clientSecret, clientId, pkce, provider} =authContext
       if (codeFromUrlHashValues) {
 
         let body = {
-          clientSecret ,
-          clientId,
-          code : code, 
-          grant_type: "token",
-          state : state
+          client_secret: clientSecret ,
+          client_id: clientId,
+          code: codeFromUrlHashValues, 
+          grant_type: "token"
         }
         
         if (pkce) {
@@ -49,19 +48,23 @@ export const  Authenticated = ({children }) => {
           body.code_verifier = code_verifier
         }
         fetch(`${provider}/token`,{
+          headers:{
+            'Content-type': 'application/json'
+          },
           method: "POST",
           body : JSON.stringify(body)
         })
+        .then(r => r.json())
         .then((response) => {
           const expires_in = new Date("2020-11-10") //TODO: will get it from the reponse
+          
           console.log('this is the response ', response)
-          setLocalToken(token,expires_in)
+          setCode(codeFromUrlHashValues)
+          setToken(response.access_token)
           return children({token})
         })
         .catch((err) => new Error('this is the error ', err))
         
-        // const _code = // TODO: look up token via fetch
-        // setCode(codeFromUrlHashValues)
       } else {
         // need to authorize
         authorize(authContext)
