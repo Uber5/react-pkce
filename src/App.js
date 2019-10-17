@@ -4,8 +4,8 @@ import { AuthContext, Authenticated} from './lib/index'
 import Home from './components/Home'
 import Login from './components/Login'
 
-const clientId = process.env.REACT_APP_CLIENT_ID || "630635d76d121e8673435ea6"
-const clientSecret = process.env.REACT_APP_CLIENT_SECRET || "630635d76d121e8673435ea6"
+const clientId = process.env.REACT_APP_CLIENT_ID || "47393dcc736027cc5f262d70"
+const clientSecret = process.env.REACT_APP_CLIENT_SECRET || "efc068860983e8d03b0c1def339ac1667909874183bd2d80fff464265a6bbfe1"
 const provider = process.env.REACT_APP_PROVIDER || "http://localhost:3020"
 
 
