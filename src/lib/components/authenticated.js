@@ -31,7 +31,7 @@ export const  Authenticated = ({children }) => {
   
   useEffect(() => {
     if (!code) {
-      const codeFromUrlHashValues = getHashValues() // TODO
+      const codeFromUrlHashValues = getHashValues().code // TODO
       const {clientSecret, clientId, pkce, provider} =authContext
       if (codeFromUrlHashValues) {
 
@@ -56,11 +56,8 @@ export const  Authenticated = ({children }) => {
         })
         .then(r => r.json())
         .then((response) => {
-          const expires_in = new Date("2020-11-10") //TODO: will get it from the reponse
-          
-          console.log('this is the response ', response)
-          setCode(codeFromUrlHashValues)
           setToken(response.access_token)
+          setCode(codeFromUrlHashValues)
           return children({token})
         })
         .catch((err) => new Error('this is the error ', err))
