@@ -1,13 +1,14 @@
 # What is It?
 
-A simple React component and higher order function to facilitate authentication
-via U5-Auth (or rather, any OAuth2 provider).
+A simple React component using `React Hooks` to facilitate authentication
+via U5-Auth (or rather, any OAuth2 provider). It is based on the Proof Key for Code Exchange [PKCE Spec](https://tools.ietf.org/html/rfc7636) 
 
 # Prerequisites
 
 * The provider url, e.g. `https://login.u5auth.com`.
+* pkce `boolean value` (compulsory)
 * OAuth2 client credentials, where the client is allowed to use the
-  [implicit flow](https://tools.ietf.org/html/rfc6749#section-1.3.2).
+  [Authorization code grant](https://tools.ietf.org/html/rfc6749#section-4.1).
 * A [React]() application, which is supposed to be secured via OAuth2 (or
   rather, needs an `access_token` to authenticate e.g. calls to APIs).
 
@@ -17,19 +18,25 @@ via U5-Auth (or rather, any OAuth2 provider).
 
 Client details need to be specified via the `AuthContext` component. The `AuthContext` must wrap any component that needs authentication, so the `AuthContext` is probably best placed high up in the component tree (maybe just above the router, if you use one):
 
-First, import the `AuthContext` component:
+First, import the `AuthContext and Authencated` component:
 
 ```javascript
-import { AuthContext } from 'react-u5auth'
+import { AuthContext, Authenticated } from 'react-u5auth'
 ```
 
 Then, wrap your component(s):
 
 ```react
-<AuthContext clientId={"123"} provider={"https://my-provider.com"}>
-  <Router history={browserHistory}>
-    // ...
-  </Router>
+<AuthContext clientId={"123"} clientSecret={0987654321} pkce={true} provider={"https://my-provider.com"}>
+  <Authenticated>
+  {
+  	({token}) => <>
+  	  <Router history={browserHistory}>
+       // ...
+     </Router>
+  	</>
+  }
+  </Authenticated>
 </AuthContext>
 ```
 
@@ -37,38 +44,38 @@ Then, wrap your component(s):
 
 Now, the higher-order function `authenticated` can be used to ensure a valid `access_token` whenever the component gets rendered:
 
-```js
-import { authenticated } from 'react-u5auth'
+**Example 1.js (class based component)**
 
+```js
 class SomeComponent extends React.Component {
   render() {
     return <p>Some component that needs an authenticated user...</p>
   }
 }
+export SomeComponent
 
-const ProtectedComponent = authenticated()(SomeComponent)
-
-const SomeOtherComponent = () => (<p>This is some other component</p>)
-const ProtectedComponent = authenticated()(() => (<SomeOtherComponent />))
 ```
+
+**Example 2.js (Pure/ functional component)**
+
+```js
+Example 1.js (class based component)
+
+const SomeComponent = () => {
+	//logic
+	return <>Some component that needs an authenticated user...</>
+}
+
+export SomeComponent
+
+```
+
+**Note:** This is all you need to protect the component(s). You don't need to add anything to your components at this point.
 
 ## Using the `access_token`
 
-A protected component isn't too valuable on its own, you may need an access
-token when speaking to an API. Anywhere the access token can be accessed like
-this:
+The access token can be recieved via the props by the children of the `Authenticated` component
 
-```
-import { getLocalToken } from 'react-u5auth'
-
-...
-const token = getLocalToken()
-...
-```
-
-Please note: There is something fishy here about the `access_token`
-being kept in global state. See
-[this issue](https://github.com/Uber5/react-u5auth/issues/3).
 
 # Status
 
