@@ -4,12 +4,13 @@ import crypto from 'crypto'
 import {base64URLEncode, sha256} from '../../helpers/sha256-base64-url-encode'
 import {hashed} from '../../helpers/hashed'
 import {getHashValues} from '../../helpers/utils'
+import {setLocalToken} from '../../local-token'
 
 
 export const  Authenticated = ({children }) => {
   const authContext = useContext(_authContext)
   const [ code, setCode] = useState(null)
-  const [token, setToken] = useState(null)
+  const {token, setToken} = authContext
   function authorize({provider, pkce, clientId}) {
     
     let query = {
@@ -30,11 +31,11 @@ export const  Authenticated = ({children }) => {
   }
   
   useEffect(() => {
-    if (!code) {
+
+    if (!code && !token) {
       const codeFromUrlHashValues = getHashValues().code // TODO
       const {clientSecret, clientId, pkce, provider} =authContext
       if (codeFromUrlHashValues) {
-
         let body = {
           client_secret: clientSecret ,
           client_id: clientId,
@@ -56,9 +57,11 @@ export const  Authenticated = ({children }) => {
         })
         .then(r => r.json())
         .then((response) => {
+          console.log('this is the repsonse ', response)
           setToken(response.access_token)
+          setLocalToken(response.access_token,response.expires_in)
           setCode(codeFromUrlHashValues)
-          return children({token})
+          window.history.replaceState({},"",getHashValues().redirect_url)
         })
         .catch((err) => new Error('this is the error ', err))
         

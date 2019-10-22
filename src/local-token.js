@@ -1,7 +1,7 @@
 let localToken = undefined
 let localExpiresAt = undefined
 
-const localStorageKey = 'tokenAndExpiry'
+const sessionStorageKey = 'tokenAndExpiry'
 
 function isExpired(when) {
   return when.getTime() < new Date().getTime() - 60000 // 1 minute slack
@@ -11,7 +11,7 @@ function getLocalToken() {
   // console.log('getLocalToken', localToken)
   if (!localToken) {
     try {
-      const item = window.localStorage.getItem(localStorageKey)
+      const item = window.sessionStorage.getItem(sessionStorageKey)
       if (item) {
         const { token, expiresAt } = JSON.parse(item)
         const expiresAtAsDate = new Date(expiresAt)
@@ -36,7 +36,7 @@ function setLocalToken(token, expires_in) {
   console.log('setLocalToken', token, expiresAt)
   localToken = token
   try {
-    window.localStorage.setItem(localStorageKey, JSON.stringify({
+    window.sessionStorage.setItem(sessionStorageKey, JSON.stringify({
       token,
       expiresAt
     }))
