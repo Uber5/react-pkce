@@ -31,7 +31,6 @@ export const  Authenticated = ({children }) => {
   }
   
   useEffect(() => {
-
     if (!code && !token) {
       const codeFromUrlHashValues = getHashValues().code // TODO
       const {clientSecret, clientId, pkce, provider} =authContext
@@ -57,7 +56,6 @@ export const  Authenticated = ({children }) => {
         })
         .then(r => r.json())
         .then((response) => {
-          console.log('this is the repsonse ', response)
           setToken(response.access_token)
           setLocalToken(response.access_token,response.expires_in)
           setCode(codeFromUrlHashValues)
@@ -66,7 +64,6 @@ export const  Authenticated = ({children }) => {
         .catch((err) => new Error('this is the error ', err))
         
       } else {
-        // need to authorize
         authorize(authContext)
       }
     }
