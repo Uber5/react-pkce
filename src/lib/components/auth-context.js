@@ -1,5 +1,5 @@
 import React, {useState} from 'react'
-import {getLocalToken} from '../../local-token'
+import {getLocalToken} from '../local-token'
 export const authContext = React.createContext({
   
 })

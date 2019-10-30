@@ -1,10 +1,10 @@
 import React, {useContext, useEffect, useState} from 'react'
 import { authContext as _authContext } from './auth-context'
 import crypto from 'crypto'
-import {base64URLEncode, sha256} from '../../helpers/sha256-base64-url-encode'
-import {hashed} from '../../helpers/hashed'
-import {getHashValues} from '../../helpers/utils'
-import {setLocalToken} from '../../local-token'
+import {base64URLEncode, sha256} from '../helpers/sha256-base64-url-encode'
+import {hashed} from '../helpers/hashed'
+import {getHashValues} from '../helpers/utils'
+import {setLocalToken} from '../local-token'
 
 
 export const  Authenticated = ({children }) => {
