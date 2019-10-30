@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {BrowserRouter, Route, Redirect} from 'react-router-dom'
+import {BrowserRouter, Route} from 'react-router-dom'
 import { AuthContext, Authenticated} from './lib/index'
 import Home from './components/Home'
 import Login from './components/Login'
