@@ -18,8 +18,7 @@
     "type": "git",
     "url": "https://github.com/Uber5/react-u5auth.git"
   },
-  "dependencies": {
-  },
+  "dependencies": {},
   "peerDependencies": {
     "react": "^16.8.0"
   },
