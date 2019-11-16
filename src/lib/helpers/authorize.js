@@ -4,7 +4,7 @@ import hashed from './hashed'
 
 export default function authorize({provider, clientId, storage = sessionStorage}) {
 
-  const encodedVerifier = base64URLEncode(createCodeVerifier)
+  const encodedVerifier = base64URLEncode(createCodeVerifier())
   storage.setItem(
     'encodedVerifier-' + encodeURIComponent(clientId),
     encodedVerifier
