@@ -1,4 +1,4 @@
-import React, {createContext, useState, useEffect} from 'react'
+import React, {createContext, useState} from 'react'
 import authorize from './helpers/authorize'
 
 const getCodeFromLocation = ({ location }) => {
@@ -17,7 +17,8 @@ const getCodeFromLocation = ({ location }) => {
 }
 
 const removeCodeFromLocation = () => {
-  const [ base, search ] = window.location.href.split('?')
+  // eslint-disable-next-line no-unused-vars
+  const [ _, search ] = window.location.href.split('?')
   if (!search) {
     return
   }
@@ -37,63 +38,54 @@ const getVerifierFromStorage = ({ clientId, storage = sessionStorage }) => {
 }
 
 export default ({ clientId, clientSecret, provider }) => {
-  let token = null
 
-  // TODO: need to do this within a React component,
-  // otherwise we cannot set the context via the provider
-  const code = getCodeFromLocation({ location: window.location })
-  if (code) {
-    removeCodeFromLocation()
-  }
-  const verifier = getVerifierFromStorage({ clientId })
-  console.log('code, verifier', code, verifier)
-  if (code && verifier) {
-    // TODO: get token for code (async, then set in context)
-  }
+  const context = createContext({})
+  const {Provider} = context
 
-  const context = createContext({
-    clientId,
-    clientSecret,
-    provider,
-    token
-  })
-
-  const Authenticated = ({ children }) => {
-    const [_token, setToken] = useState(token)
-
-    useEffect(() => {
-      if (!_token) {
-        console.log('must authenticate...')
-        if (false) { // TODO: check if code in url
-
+  class Authenticated extends React.Component {
+    static contextType = context
+    componentDidMount() {
+      const { token, setToken } = this.context
+      if (!token) {
+        const code = getCodeFromLocation({ location: window.location })
+        const verifier = getVerifierFromStorage({ clientId })
+        if (code && verifier) {
+          removeCodeFromLocation()
+        }
+        console.log('code, verifier', code, verifier)
+        if (code && verifier) {
+          new Promise(res => setTimeout(res, 1500)).then(() => setToken('123')) // TODO: fake
+          // TODO: get token for code (async, then set in context)
         } else {
+          console.log('no code or no token, need to authenticate')
           authorize({
             provider,
             clientId
           })
         }
       }
-    }, [_token])
+    }
+    render() {
+      const { token } = this.context
+      const { children } = this.props
 
-    // TODO: also timeout logic?
-
-    if (!_token) {
-      return <p>logging in...</p> // TODO: configurable component here
-    } else {
-      return children
+      if (!token) {
+        return <p>logging in...</p> // TODO: configurable component here
+      } else {
+        return children
+      }
     }
   }
 
-  // const useToken = () => {
-  //   if (!token) {
-  //     throw new Error('You can only use "useToken" within the children of an "Authenticated" component. Check the docs.')
-  //   }
-  //   return token
-  // }
-
   return {
-    AuthContext: context,
-    Authenticated,
-    // useToken
+    AuthContext: ({children}) => {
+      const [token, setToken] = useState(null)
+      return (
+        <Provider value={{token, setToken}}>
+          {children}
+        </Provider>
+      )
+    },
+    Authenticated
   }
 }

@@ -5,7 +5,7 @@ const clientId = process.env.REACT_APP_CLIENT_ID || "8cb4904ae5581ecc2b3a1774"
 const clientSecret = process.env.REACT_APP_CLIENT_SECRET || "b683283462070edbac15a8fdab751ada0f501ab48a5f06aa20aee3be24eac9cc"
 const provider = process.env.REACT_APP_PROVIDER || "https://authenticate.u5auth.com"
 
-const {AuthContext, Authenticated, useToken} = createAuthContext({
+const {AuthContext, Authenticated} = createAuthContext({
   clientId,
   clientSecret,
   provider
@@ -20,7 +20,7 @@ function ProtectedStuff() {
 function App() {
   const [showProtected, setShowProtected] = useState(false)
   return (
-    <AuthContext.Provider>
+    <AuthContext>
       <h1>Auth Demo</h1>
       <p>
         We render the app inside an AuthContext.Provider.
@@ -32,7 +32,7 @@ function App() {
       </p>
       <button onClick={() => setShowProtected(!showProtected)}>reveal</button>
       { showProtected && <ProtectedStuff/> }
-    </AuthContext.Provider>
+    </AuthContext>
   )
 }
 
