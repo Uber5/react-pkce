@@ -1,15 +1,21 @@
-import React from 'react'
+import React, {useState} from 'react'
 import createAuthContext from './lib/createAuthContext'
 
 const clientId = process.env.REACT_APP_CLIENT_ID || "47393dcc736027cc5f262d70"
 const clientSecret = process.env.REACT_APP_CLIENT_SECRET || "efc068860983e8d03b0c1def339ac1667909874183bd2d80fff464265a6bbfe1"
 const provider = process.env.REACT_APP_PROVIDER || "http://localhost:3020"
 
-const AuthContext = createAuthContext({
+const {AuthContext, Authenticated, useToken} = createAuthContext({
   clientId,
   clientSecret,
   provider
 })
+
+function ProtectedStuff() {
+  return <Authenticated>
+    This would be visible only if logged in.
+  </Authenticated>
+}
 
 function App() {
   const [showProtected, setShowProtected] = useState(false)
@@ -24,7 +30,8 @@ function App() {
         When you push "reveal", we will show something protected,
         you are only supposed to see it after being authenticated.
       </p>
-      <button>reveal</button>
+      <button onClick={() => setShowProtected(!showProtected)}>reveal</button>
+      { showProtected && <ProtectedStuff/> }
     </AuthContext.Provider>
   )
 }
