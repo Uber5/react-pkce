@@ -1,4 +1,4 @@
-import React, {createContext, useState} from 'react'
+import React, {createContext, useState, useEffect} from 'react'
 import authorize from './helpers/authorize'
 
 const getCodeFromLocation = ({ location }) => {
@@ -45,25 +45,8 @@ export default ({ clientId, clientSecret, provider }) => {
   class Authenticated extends React.Component {
     static contextType = context
     componentDidMount() {
-      const { token, setToken } = this.context
-      if (!token) {
-        const code = getCodeFromLocation({ location: window.location })
-        const verifier = getVerifierFromStorage({ clientId })
-        if (code && verifier) {
-          removeCodeFromLocation()
-        }
-        console.log('code, verifier', code, verifier)
-        if (code && verifier) {
-          new Promise(res => setTimeout(res, 1500)).then(() => setToken('123')) // TODO: fake
-          // TODO: get token for code (async, then set in context)
-        } else {
-          console.log('no code or no token, need to authenticate')
-          authorize({
-            provider,
-            clientId
-          })
-        }
-      }
+      const { ensureAuthenticated } = this.context
+      ensureAuthenticated()
     }
     render() {
       const { token } = this.context
@@ -80,8 +63,33 @@ export default ({ clientId, clientSecret, provider }) => {
   return {
     AuthContext: ({children}) => {
       const [token, setToken] = useState(null)
+
+      // if we have no token, but code and verifier are present,
+      // then we try to swap code for token
+      useEffect(() => {
+        if (!token) {
+          const code = getCodeFromLocation({ location: window.location })
+          const verifier = getVerifierFromStorage({ clientId })
+          if (code && verifier) {
+            removeCodeFromLocation()
+          }
+          console.log('code, verifier', code, verifier)
+          if (code && verifier) {
+            new Promise(res => setTimeout(res, 1500)).then(() => setToken('123')) // TODO: fake
+            // TODO: get token for code (async, then set in context)
+          }
+        }
+      }, [token])
+
+      const ensureAuthenticated = () => {
+        const code = getCodeFromLocation({ location: window.location })
+        if (!token && !code) {
+          authorize({provider, clientId})
+        }
+      }
+
       return (
-        <Provider value={{token, setToken}}>
+        <Provider value={{token, ensureAuthenticated}}>
           {children}
         </Provider>
       )
