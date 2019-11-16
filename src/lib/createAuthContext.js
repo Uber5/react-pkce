@@ -16,6 +16,34 @@ const getCodeFromLocation = ({ location }) => {
   return null
 }
 
+const fetchToken = ({ clientId, clientSecret, code, verifier, tokenEndpoint }) => {
+  const payload = {
+    client_secret: clientSecret ,
+    client_id: clientId,
+    code, 
+    grant_type: 'authorization_code',
+    code_verifier: verifier
+  }
+  return new Promise((resolve, reject) => {
+    fetch(tokenEndpoint, {
+      headers: {
+        'Content-type': 'application/json'
+      },
+      method: 'POST',
+      body: JSON.stringify(payload)
+    })
+    .then(r => {
+      console.log('r', r)
+      return r.json()
+    })
+    .then(res => {
+      console.log('res', res)
+      return resolve(res)
+    })
+    .catch(reject)
+  })
+}
+
 const removeCodeFromLocation = () => {
   // eslint-disable-next-line no-unused-vars
   const [ _, search ] = window.location.href.split('?')
@@ -33,11 +61,11 @@ const removeCodeFromLocation = () => {
 const getVerifierFromStorage = ({ clientId, storage = sessionStorage }) => {
   const key = 'encodedVerifier-' + encodeURIComponent(clientId) // TODO: magic key
   const value = storage.getItem(key)
-  storage.setItem(key, null)
+  storage.removeItem(key)
   return value
 }
 
-export default ({ clientId, clientSecret, provider }) => {
+export default ({ clientId, clientSecret, provider, tokenEndpoint = `${provider}/token` }) => {
 
   const context = createContext({})
   const {Provider} = context
@@ -75,8 +103,12 @@ export default ({ clientId, clientSecret, provider }) => {
           }
           console.log('code, verifier', code, verifier)
           if (code && verifier) {
-            new Promise(res => setTimeout(res, 1500)).then(() => setToken('123')) // TODO: fake
-            // TODO: get token for code (async, then set in context)
+            fetchToken({clientId, clientSecret, tokenEndpoint, code, verifier})
+            .then(setToken)
+            .catch(e => {
+              console.error(e)
+              alert(`Error fetching auth token: ${e.message}`)
+            })
           }
         }
       }, [token])
