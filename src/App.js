@@ -1,9 +1,9 @@
 import React, {useState} from 'react'
 import createAuthContext from './lib/createAuthContext'
 
-const clientId = process.env.REACT_APP_CLIENT_ID || "47393dcc736027cc5f262d70"
-const clientSecret = process.env.REACT_APP_CLIENT_SECRET || "efc068860983e8d03b0c1def339ac1667909874183bd2d80fff464265a6bbfe1"
-const provider = process.env.REACT_APP_PROVIDER || "http://localhost:3020"
+const clientId = process.env.REACT_APP_CLIENT_ID || "8cb4904ae5581ecc2b3a1774"
+const clientSecret = process.env.REACT_APP_CLIENT_SECRET || "b683283462070edbac15a8fdab751ada0f501ab48a5f06aa20aee3be24eac9cc"
+const provider = process.env.REACT_APP_PROVIDER || "https://authenticate.u5auth.com"
 
 const {AuthContext, Authenticated, useToken} = createAuthContext({
   clientId,

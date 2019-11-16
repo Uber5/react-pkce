@@ -1,4 +1,5 @@
 import React, {createContext, useState, useEffect} from 'react'
+import authorize from './helpers/authorize'
 
 export default ({ clientId, clientSecret, provider }) => {
   const token = null
@@ -15,7 +16,15 @@ export default ({ clientId, clientSecret, provider }) => {
 
     useEffect(() => {
       if (!_token) {
-        console.log('must authenticate...')        
+        console.log('must authenticate...')
+        if (false) { // TODO: check if code in url
+
+        } else {
+          authorize({
+            provider,
+            clientId
+          })
+        }
       }
     }, [_token])
 
@@ -28,7 +37,12 @@ export default ({ clientId, clientSecret, provider }) => {
     }
   }
 
-  const useToken = () => token
+  const useToken = () => {
+    if (!token) {
+      throw new Error('You can only use "useToken" within the children of an "Authenticated" component. Check the docs.')
+    }
+    return token
+  }
 
   return {
     AuthContext: context,
