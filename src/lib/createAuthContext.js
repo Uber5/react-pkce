@@ -16,7 +16,9 @@ const getCodeFromLocation = ({ location }) => {
   return null
 }
 
-const fetchToken = ({ clientId, clientSecret, code, verifier, tokenEndpoint }) => {
+const fetchToken = ({
+  clientId, clientSecret, code, verifier, tokenEndpoint, fetch = window.fetch
+}) => {
   const payload = {
     client_secret: clientSecret ,
     client_id: clientId,
@@ -66,14 +68,21 @@ const removeCodeFromLocation = () => {
   window.history.replaceState(window.history.state, null, newSearch.length ? `?${newSearch}` : '')
 }
 
-const getVerifierFromStorage = ({ clientId, storage = sessionStorage }) => {
+const getVerifierFromStorage = ({ clientId, storage }) => {
   const key = 'encodedVerifier-' + encodeURIComponent(clientId) // TODO: magic key
   const value = storage.getItem(key)
   storage.removeItem(key)
   return value
 }
 
-export default ({ clientId, clientSecret, provider, tokenEndpoint = `${provider}/token` }) => {
+export default ({
+  clientId,
+  clientSecret,
+  provider,
+  tokenEndpoint = `${provider}/token`,
+  storage = sessionStorage,
+  fetch = window.fetch
+}) => {
 
   const context = createContext({})
   const {Provider} = context
@@ -113,13 +122,15 @@ export default ({ clientId, clientSecret, provider, tokenEndpoint = `${provider}
       useEffect(() => {
         if (!token) {
           const code = getCodeFromLocation({ location: window.location })
-          const verifier = getVerifierFromStorage({ clientId })
+          const verifier = getVerifierFromStorage({ clientId, storage })
           if (code && verifier) {
             removeCodeFromLocation()
           }
           console.log('code, verifier', code, verifier)
           if (code && verifier) {
-            fetchToken({clientId, clientSecret, tokenEndpoint, code, verifier})
+            fetchToken({
+              clientId, clientSecret, tokenEndpoint, code, verifier, fetch
+            })
             .then(setToken)
             .catch(e => {
               console.error(e)

@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "React PKCE Demo",
+  "name": "React PKCE (OAuth2) App Sample",
   "icons": [
     {
       "src": "favicon.ico",
