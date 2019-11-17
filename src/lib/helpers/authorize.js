@@ -1,12 +1,13 @@
 import { base64URLEncode, sha256 } from "./sha256-base64-url-encode"
 import createCodeVerifier from './create-code-verifier'
 import hashed from './hashed'
+import getEncodedVerifierKey from './getEncodedVerifierKey'
 
 export default function authorize({provider, clientId, storage = sessionStorage}) {
 
   const encodedVerifier = base64URLEncode(createCodeVerifier())
   storage.setItem(
-    'encodedVerifier-' + encodeURIComponent(clientId),
+    getEncodedVerifierKey(clientId),
     encodedVerifier
   )
 

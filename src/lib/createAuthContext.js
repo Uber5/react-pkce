@@ -1,5 +1,6 @@
 import React, {createContext, useState, useEffect, useContext} from 'react'
 import authorize from './helpers/authorize'
+import getEncodedVerifierKey from './helpers/getEncodedVerifierKey'
 
 const getCodeFromLocation = ({ location }) => {
   const split = location.toString().split('?')
@@ -68,10 +69,14 @@ const removeCodeFromLocation = () => {
 }
 
 const getVerifierFromStorage = ({ clientId, storage }) => {
-  const key = 'encodedVerifier-' + encodeURIComponent(clientId) // TODO: magic key
+  const key = getEncodedVerifierKey(clientId)
   const value = storage.getItem(key)
-  storage.removeItem(key)
   return value
+}
+
+const removeVerifierFromStorage = ({ clientId, storage }) => {
+  const key = getEncodedVerifierKey(clientId)
+  storage.removeItem(key)
 }
 
 export default ({
@@ -122,15 +127,15 @@ export default ({
         if (!token) {
           const code = getCodeFromLocation({ location: window.location })
           const verifier = getVerifierFromStorage({ clientId, storage })
-          if (code) {
-            removeCodeFromLocation()
-          }
-          console.log('code, verifier', code, verifier)
           if (code && verifier) {
             fetchToken({
               clientId, clientSecret, tokenEndpoint, code, verifier, fetch
             })
             .then(setToken)
+            .then(() => {
+              removeCodeFromLocation()
+              removeVerifierFromStorage({ clientId, storage })  
+            })
             .catch(e => {
               console.error(e)
               alert(`Error fetching auth token: ${e.message}`)
