@@ -1,83 +1,10 @@
 import React, {createContext, useState, useEffect, useContext} from 'react'
 import authorize from './helpers/authorize'
-import getEncodedVerifierKey from './helpers/getEncodedVerifierKey'
-
-const getCodeFromLocation = ({ location }) => {
-  const split = location.toString().split('?')
-  if (split.length < 2) {
-    return null
-  }
-  const pairs = split[1].split('&')
-  for (const pair of pairs) {
-    const [ key, value ] = pair.split('=')
-    if (key === 'code') {
-      return decodeURIComponent(value || '')
-    }
-  }
-  return null
-}
-
-const fetchToken = ({
-  clientId, clientSecret, code, verifier, tokenEndpoint, fetch = window.fetch
-}) => {
-  const payload = {
-    client_secret: clientSecret ,
-    client_id: clientId,
-    code, 
-    grant_type: 'authorization_code',
-    code_verifier: verifier
-  }
-  return fetch(tokenEndpoint, {
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    method: 'POST',
-    body: JSON.stringify(payload)
-  })
-  .then(r => {
-    if (!r.ok) {
-      throw new Error(`Token response not ok, status is ${r.status}, check the react-u5auth configuration (wrong provider or token endpoint?)`)
-    }
-    return r.json()
-  })
-  .then(token => {
-    const { expires_in } = token
-    if (expires_in && Number.isFinite(expires_in)) {
-      const slackSeconds = 10
-      // add 'expires_at', with the given slack
-      token.expires_at = new Date(new Date().getTime() + expires_in * 1000 - (slackSeconds * 1000))
-    }
-    return token
-  })
-  .catch(err => {
-    console.error('ERR (fetch)', err)
-    throw err
-  })
-}
-
-const removeCodeFromLocation = () => {
-  const [ base, search ] = window.location.href.split('?')
-  if (!search) {
-    return
-  }
-  const newSearch = search.split('&')
-    .map(param => param.split('='))
-    .filter(([ key ]) => key !== 'code')
-    .map(keyAndVal => keyAndVal.join('='))
-    .join('&')
-  window.history.replaceState(window.history.state, null, base + (newSearch.length ? `?${newSearch}` : ''))
-}
-
-const getVerifierFromStorage = ({ clientId, storage }) => {
-  const key = getEncodedVerifierKey(clientId)
-  const value = storage.getItem(key)
-  return value
-}
-
-const removeVerifierFromStorage = ({ clientId, storage }) => {
-  const key = getEncodedVerifierKey(clientId)
-  storage.removeItem(key)
-}
+import { getCodeFromLocation } from './helpers/getCodeFromLocation'
+import { fetchToken } from './helpers/fetchToken'
+import { removeCodeFromLocation } from './helpers/removeCodeFromLocation'
+import { getVerifierFromStorage } from './helpers/getVerifierFromStorage'
+import { removeVerifierFromStorage } from './helpers/removeVerifierFromStorage'
 
 export default ({
   clientId,
@@ -85,7 +12,8 @@ export default ({
   provider,
   tokenEndpoint = `${provider}/token`,
   storage = sessionStorage,
-  fetch = window.fetch
+  fetch = window.fetch,
+  busyIndicator = <>logging in...</>
 }) => {
 
   const context = createContext({})
@@ -102,7 +30,7 @@ export default ({
       const { children } = this.props
 
       if (!token) {
-        return <p>logging in...</p> // TODO: configurable component here
+        return busyIndicator
       } else {
         return children
       }
