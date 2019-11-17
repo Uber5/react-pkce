@@ -55,8 +55,7 @@ const fetchToken = ({
 }
 
 const removeCodeFromLocation = () => {
-  // eslint-disable-next-line no-unused-vars
-  const [ _, search ] = window.location.href.split('?')
+  const [ base, search ] = window.location.href.split('?')
   if (!search) {
     return
   }
@@ -65,7 +64,7 @@ const removeCodeFromLocation = () => {
     .filter(([ key ]) => key !== 'code')
     .map(keyAndVal => keyAndVal.join('='))
     .join('&')
-  window.history.replaceState(window.history.state, null, newSearch.length ? `?${newSearch}` : '/')
+  window.history.replaceState(window.history.state, null, base + (newSearch.length ? `?${newSearch}` : ''))
 }
 
 const getVerifierFromStorage = ({ clientId, storage }) => {
