@@ -8,6 +8,9 @@ authentication. The OAuth2 provider must support the
 (TODO: Links to resources that explain why this is a good idea / better than
 using the implicit flow.)
 
+Check the [live demo](https://uber5.github.io/react-pkce-sample/).
+When prompted to login, you can signup with email (use link at the bottom of the form).
+
 # Prerequisites
 
 * The provider url, e.g. `https://login.u5auth.com`
