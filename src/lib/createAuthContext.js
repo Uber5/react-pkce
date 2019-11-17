@@ -24,23 +24,24 @@ const fetchToken = ({ clientId, clientSecret, code, verifier, tokenEndpoint }) =
     grant_type: 'authorization_code',
     code_verifier: verifier
   }
-  return new Promise((resolve, reject) => {
-    fetch(tokenEndpoint, {
-      headers: {
-        'Content-type': 'application/json'
-      },
-      method: 'POST',
-      body: JSON.stringify(payload)
-    })
-    .then(r => {
-      console.log('r', r)
-      return r.json()
-    })
-    .then(res => {
-      console.log('res', res)
-      return resolve(res)
-    })
-    .catch(reject)
+  return fetch(tokenEndpoint, {
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    // cors: 'no-cors',
+    // credentials: 'omit',
+    method: 'POST',
+    body: JSON.stringify(payload)
+  })
+  .then(r => {
+    if (!r.ok) {
+      throw new Error(`Token response not ok, status is ${r.status}, check the react-u5auth configuration (wrong provider or token endpoint?)`)
+    }
+    return r.json()
+  })
+  .catch(err => {
+    console.error('ERR (fetch)', err)
+    throw err
   })
 }
 
