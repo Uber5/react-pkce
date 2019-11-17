@@ -1,6 +1,6 @@
 # What is It?
 
-This package enables [React](https://reactjs.org/) applications
+This zero-dependency package enables [React](https://reactjs.org/) applications
 to use an OAuth2 provider for
 authentication. The OAuth2 provider must support the
 [PKCE Spec](https://tools.ietf.org/html/rfc7636).
