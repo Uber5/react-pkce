@@ -1,4 +1,4 @@
-import React, {createContext, useState, useEffect} from 'react'
+import React, {createContext, useState, useEffect, useContext} from 'react'
 import authorize from './helpers/authorize'
 
 const getCodeFromLocation = ({ location }) => {
@@ -28,8 +28,6 @@ const fetchToken = ({ clientId, clientSecret, code, verifier, tokenEndpoint }) =
     headers: {
       'Content-Type': 'application/json'
     },
-    // cors: 'no-cors',
-    // credentials: 'omit',
     method: 'POST',
     body: JSON.stringify(payload)
   })
@@ -38,6 +36,15 @@ const fetchToken = ({ clientId, clientSecret, code, verifier, tokenEndpoint }) =
       throw new Error(`Token response not ok, status is ${r.status}, check the react-u5auth configuration (wrong provider or token endpoint?)`)
     }
     return r.json()
+  })
+  .then(token => {
+    const { expires_in } = token
+    if (expires_in && Number.isFinite(expires_in)) {
+      const slackSeconds = 10
+      // add 'expires_at', with the given slack
+      token.expires_at = new Date(new Date().getTime() + expires_in * 1000 - (slackSeconds * 1000))
+    }
+    return token
   })
   .catch(err => {
     console.error('ERR (fetch)', err)
@@ -89,6 +96,14 @@ export default ({ clientId, clientSecret, provider, tokenEndpoint = `${provider}
     }
   }
 
+  const useToken = () => {
+    const { token } = useContext(context)
+    if (!token) {
+      console.warn(`Trying to useToken() while not being authenticated.\nMake sure to useToken() only inside of an <Authenticated /> component.`)
+    }
+    return token
+  }
+
   return {
     AuthContext: ({children}) => {
       const [token, setToken] = useState(null)
@@ -127,6 +142,7 @@ export default ({ clientId, clientSecret, provider, tokenEndpoint = `${provider}
         </Provider>
       )
     },
-    Authenticated
+    Authenticated,
+    useToken
   }
 }
