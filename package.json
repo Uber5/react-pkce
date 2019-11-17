@@ -1,6 +1,6 @@
 {
   "name": "react-pkce",
-  "version": "0.9.3",
+  "version": "0.9.4",
   "description": "React components to authenticate via PKCE",
   "main": "dist/index.js",
   "scripts": {
