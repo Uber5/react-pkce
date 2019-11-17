@@ -65,7 +65,7 @@ const removeCodeFromLocation = () => {
     .filter(([ key ]) => key !== 'code')
     .map(keyAndVal => keyAndVal.join('='))
     .join('&')
-  window.history.replaceState(window.history.state, null, newSearch.length ? `?${newSearch}` : '')
+  window.history.replaceState(window.history.state, null, newSearch.length ? `?${newSearch}` : '/')
 }
 
 const getVerifierFromStorage = ({ clientId, storage }) => {
@@ -123,7 +123,7 @@ export default ({
         if (!token) {
           const code = getCodeFromLocation({ location: window.location })
           const verifier = getVerifierFromStorage({ clientId, storage })
-          if (code && verifier) {
+          if (code) {
             removeCodeFromLocation()
           }
           console.log('code, verifier', code, verifier)
