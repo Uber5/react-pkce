@@ -44,6 +44,12 @@ const {AuthContext, Authenticated, useToken} = createAuthContext({
 })
 ```
 
+You probably need those in other files, so you may want to `export` them:
+
+```js
+export { AuthContext, Authenticated, useToken }
+```
+
 Next, use the `AuthContext` to wrap anything that may require
 an authenticated user / an access token for an authenticated user.
 Typically, you would wrap the whole app inside of an `AuthContext`:
@@ -92,9 +98,21 @@ function ComponentWithToken() {
 
 Note: You need to provide your own `fetchData()` function.
 
+## Options
+
+In addition to the required properties (`clientId` etc), the following properties can be specified when calling `createAuthContext()`:
+
+- `busyIndicator`: A React element to be rendered while logging in, e.g. `<Spinner />`.
+- `fetch`: HTTP requests to talk to the OAuth2 provider are done using `window.fetch`, unless you specify your own `fetch` function as a property.
+- `storage`: By default, authentication information (the token) is kept in `window.sessionStorage`. If you want to use different storage (e.g. `window.localStorage`), set this property. (TODO: won't work yet, as we don't check expiry of tokens!)
+- `tokenEndpoint`: The default token endpoint is `${provider}/token`. Configure a different token endpoint here, if your OAuth2 provider does not follow this convention.
+
+
 # Example
 
-Check [the Sample App](./src/App.js). It is fully functional, and it uses
+Check [the Sample App](./src/App.js)
+([source](https://github.com/Uber5/react-pkce-sample)).
+It is fully functional, and it uses
 [Uber5's OAuth2 provider](https://uber5.com).
 
 You can run the example, after cloning the repo:
