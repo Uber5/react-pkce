@@ -13,11 +13,12 @@
     "sample": "webpack-dev-server --port 3001 --config ./sample/webpack.config.js"
   },
   "author": "Chris Oloff <chris@uber5.com> (http://about.uber5.com/)",
+  "keywords": [ "oauth2", "authentication", "react", "pkce" ],
   "license": "MIT",
   "homepage": "https://github.com/Uber5/react-u5auth/tree/react-pkce",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Uber5/react-u5auth.git"
+    "url": "https://github.com/Uber5/react-pkce.git"
   },
   "dependencies": {},
   "peerDependencies": {
