@@ -122,6 +122,11 @@ npm run start
 
 ... then connect to http://localhost:3001.
 
+# Develop
+
+Run the example, see above. As the example runs via `react-scripts`, you
+can live-edit the sample, and the code of this package,
+which lives under `./src/lib`.
 
 # Status
 
