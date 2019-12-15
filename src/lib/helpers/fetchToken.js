@@ -1,11 +1,13 @@
 export const fetchToken = ({ clientId, clientSecret, code, verifier, tokenEndpoint, fetch = window.fetch }) => {
   const payload = {
-    client_secret: clientSecret,
     client_id: clientId,
     code,
     grant_type: 'authorization_code',
     code_verifier: verifier
   };
+  if (clientSecret) {
+    payload.client_secret = clientSecret
+  }
   return fetch(tokenEndpoint, {
     headers: {
       'Content-Type': 'application/json'
