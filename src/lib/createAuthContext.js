@@ -10,6 +10,7 @@ export default ({
   clientId,
   clientSecret,
   provider,
+  scopes = [],
   tokenEndpoint = `${provider}/token`,
   storage = sessionStorage,
   fetch = window.fetch,
@@ -75,7 +76,7 @@ export default ({
       const ensureAuthenticated = () => {
         const code = getCodeFromLocation({ location: window.location })
         if (!token && !code) {
-          authorize({provider, clientId})
+          authorize({provider, clientId, scopes})
         }
       }
 
