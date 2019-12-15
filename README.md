@@ -40,8 +40,9 @@ const provider = "https://authenticate.u5auth.com"
 
 const {AuthContext, Authenticated, useToken} = createAuthContext({
   clientId,
-  clientSecret,
-  provider
+  clientSecret, // optional, only specify if provider requires it
+  provider,
+  scopes: [ 'profile', 'otherScope' ]
 })
 ```
 
