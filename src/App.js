@@ -9,8 +9,9 @@ const useUrlEncodedForm = process.env.REACT_USE_URLENCODEDFORM || true
 
 const {AuthContext, Authenticated, useToken} = createAuthContext({
   clientId,
+  clientSecret,
   provider,
-  scopes : ['email'],
+  // tokenEndpoint: 'http://localhost:3020/token' // If token endpoint is not "provider + '/token'"
   redirectUri,
   useUrlEncodedForm
 })
