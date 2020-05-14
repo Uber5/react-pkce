@@ -39,8 +39,22 @@ export default ({
   }
 
   const useToken = () => {
-    const { token } = useContext(context)
-    if (!token) {
+    const { token, setAccessToke } = useContext(context)
+    if (token) {
+      const now = new Date()
+      const elapsed = now.getTime() - new Date(token.expires_at).getTime()
+      const slack = 10
+      console.log('now.getTime()',now.getTime())
+      console.log('elapsed', elapsed)
+      if(elapsed > slack){ 
+        console.log('token is old ',token)
+        return exhancgeRefreshTokenForAccessToken({clientId, clientSecret, tokenEndpoint, fetch , token })
+        .then(response => {
+          setAccessToke(response)
+        })
+      }
+      return token
+    } else {
       console.warn(`Trying to useToken() while not being authenticated.\nMake sure to useToken() only inside of an <Authenticated /> component.`)
     }
     return token
@@ -81,7 +95,7 @@ export default ({
       }
 
       return (
-        <Provider value={{token, ensureAuthenticated}}>
+        <Provider value={{token, setToken, ensureAuthenticated}}>
           {children}
         </Provider>
       )
