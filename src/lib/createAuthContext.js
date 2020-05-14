@@ -5,6 +5,7 @@ import { fetchToken } from './helpers/fetchToken'
 import { removeCodeFromLocation } from './helpers/removeCodeFromLocation'
 import { getVerifierFromStorage } from './helpers/getVerifierFromStorage'
 import { removeVerifierFromStorage } from './helpers/removeVerifierFromStorage'
+import {exchangeRefreshForAccessToken} from './helpers/exchangeRefreshForAccessToken'
 
 export default ({
   clientId,
@@ -39,18 +40,15 @@ export default ({
   }
 
   const useToken = () => {
-    const { token, setAccessToke } = useContext(context)
+    const { token, setToken } = useContext(context)
     if (token) {
       const now = new Date()
       const elapsed = now.getTime() - new Date(token.expires_at).getTime()
-      const slack = 10
-      console.log('now.getTime()',now.getTime())
-      console.log('elapsed', elapsed)
+      const slack = 1000
       if(elapsed > slack){ 
-        console.log('token is old ',token)
-        return exhancgeRefreshTokenForAccessToken({clientId, clientSecret, tokenEndpoint, fetch , token })
+        return exchangeRefreshForAccessToken({clientId, clientSecret, tokenEndpoint, fetch , token })
         .then(response => {
-          setAccessToke(response)
+          setToken(response)
         })
       }
       return token

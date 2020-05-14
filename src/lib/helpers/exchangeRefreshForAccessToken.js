@@ -1,4 +1,4 @@
-export const exhancgeRefreshTokenForAccessToken = ({ clientId, clientSecret, tokenEndpoint, fetch = window.fetch, token }) => {
+export const exchangeRefreshForAccessToken = ({ clientId, clientSecret, tokenEndpoint, fetch = window.fetch, token }) => {
   const payload = {
     client_secret: clientSecret,
     client_id: clientId,
