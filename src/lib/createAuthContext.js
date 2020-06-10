@@ -44,7 +44,7 @@ export default ({
     if (token) {
       const now = new Date()
       const elapsed = now.getTime() - new Date(token.expires_at).getTime()
-      const slack = 1000
+      const slack = 10000
       if(elapsed > slack){ 
         return exchangeRefreshForAccessToken({clientId, clientSecret, tokenEndpoint, fetch , token })
         .then(response => {
@@ -68,6 +68,7 @@ export default ({
         if (!token) {
           const code = getCodeFromLocation({ location: window.location })
           const verifier = getVerifierFromStorage({ clientId, storage })
+          const slackSeconds = 10
           if (code && verifier) {
             fetchToken({
               clientId, clientSecret, tokenEndpoint, code, verifier, fetch
@@ -76,6 +77,9 @@ export default ({
             .then(() => {
               removeCodeFromLocation()
               removeVerifierFromStorage({ clientId, storage })  
+              if(token.refresh_token) {
+                setInterval(useToken(),token.expires_at - (slackSeconds * 1000))
+              }
             })
             .catch(e => {
               console.error(e)
