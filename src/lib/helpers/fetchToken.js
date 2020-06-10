@@ -10,10 +10,10 @@ export const fetchToken = ({ clientId, clientSecret, code, verifier, tokenEndpoi
   }
   return fetch(tokenEndpoint, {
     headers: {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/x-www-form-urlencoded'
     },
     method: 'POST',
-    body: JSON.stringify(payload)
+    body: new window.URLSearchParams(payload)
   })
     .then(r => {
       if (!r.ok) {
