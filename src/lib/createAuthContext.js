@@ -43,13 +43,14 @@ export default ({
     const { token, setToken } = useContext(context)
     if (token) {
       const now = new Date()
-      const elapsed = now.getTime() - new Date(token.expires_at).getTime()
-      const slack = 10000
+      const elapsed = new Date(token.expires_at).getTime() - now.getTime()
+      const slack = elapsed + 10000
+      console.log('djbfagkj')
       if(token.refresh_token) {
         setInterval(() =>exchangeRefreshForAccessToken({clientId, clientSecret, tokenEndpoint, fetch , token })
         .then(response => {
           setToken(response)
-        }),elapsed - slack)
+        }),slack - elapsed )
       }
       return token
     } else {
