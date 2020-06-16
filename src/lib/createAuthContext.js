@@ -5,6 +5,7 @@ import { fetchToken } from './helpers/fetchToken'
 import { removeCodeFromLocation } from './helpers/removeCodeFromLocation'
 import { getVerifierFromStorage } from './helpers/getVerifierFromStorage'
 import { removeVerifierFromStorage } from './helpers/removeVerifierFromStorage'
+import {exchangeRefreshForAccessToken} from './helpers/exchangeRefreshForAccessToken'
 
 export default ({
   clientId,
@@ -39,10 +40,24 @@ export default ({
   }
 
   const useToken = () => {
-    const { token } = useContext(context)
-    if (!token) {
-      console.warn(`Trying to useToken() while not being authenticated.\nMake sure to useToken() only inside of an <Authenticated /> component.`)
-    }
+    const { token, setToken } = useContext(context)
+    useEffect(() => {
+      if (token) {
+        const now = new Date()
+        const elapsed = new Date(token.expires_at).getTime() - now.getTime()
+        const slack = 10000
+        if(token.refresh_token) {
+          const timer = setTimeout(() =>exchangeRefreshForAccessToken({clientId, clientSecret, tokenEndpoint, fetch , token })
+          .then(response => {
+            setToken(response)
+          }),elapsed - slack )
+          return () => clearTimeout(timer)
+        }
+      } else {
+        console.warn(`Trying to useToken() while not being authenticated.\nMake sure to useToken() only inside of an <Authenticated /> component.`)
+      }
+    },[token])
+    
     return token
   }
 
@@ -56,6 +71,7 @@ export default ({
         if (!token) {
           const code = getCodeFromLocation({ location: window.location })
           const verifier = getVerifierFromStorage({ clientId, storage })
+          const slackSeconds = 10
           if (code && verifier) {
             fetchToken({
               clientId, clientSecret, tokenEndpoint, code, verifier, fetch
@@ -63,7 +79,7 @@ export default ({
             .then(setToken)
             .then(() => {
               removeCodeFromLocation()
-              removeVerifierFromStorage({ clientId, storage })  
+              removeVerifierFromStorage({ clientId, storage })
             })
             .catch(e => {
               console.error(e)
@@ -81,7 +97,7 @@ export default ({
       }
 
       return (
-        <Provider value={{token, ensureAuthenticated}}>
+        <Provider value={{token, setToken, ensureAuthenticated}}>
           {children}
         </Provider>
       )
