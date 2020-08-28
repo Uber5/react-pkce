@@ -3,7 +3,8 @@ export const fetchToken = ({ clientId, clientSecret, code, verifier, tokenEndpoi
     client_id: clientId,
     code,
     grant_type: 'authorization_code',
-    code_verifier: verifier
+    code_verifier: verifier,
+    redirect_uri: window.location.href.split('?')[0]
   };
   if (clientSecret) {
     payload.client_secret = clientSecret
