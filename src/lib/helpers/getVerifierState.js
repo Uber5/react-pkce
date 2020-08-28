@@ -1,6 +1,6 @@
 import getEncodedVerifierKey from './getEncodedVerifierKey'
-export const getVerifierFromStorage = ({ clientId, storage }) => {
+export const getVerifierState = ({ clientId, storage }) => {
   const key = getEncodedVerifierKey(clientId);
-  const value = storage.getItem(key);
+  const value = JSON.parse(storage.getItem(key));
   return value;
 }

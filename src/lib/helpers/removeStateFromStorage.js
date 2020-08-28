@@ -1,5 +1,5 @@
 import getEncodedVerifierKey from './getEncodedVerifierKey'
-export const removeVerifierFromStorage = ({ clientId, storage }) => {
+export const removeStateFromStorage = ({ clientId, storage }) => {
   const key = getEncodedVerifierKey(clientId);
   storage.removeItem(key);
 }

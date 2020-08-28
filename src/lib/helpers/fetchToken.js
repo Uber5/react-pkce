@@ -1,9 +1,10 @@
-export const fetchToken = ({ clientId, clientSecret, code, verifier, tokenEndpoint, fetch = window.fetch }) => {
+export const fetchToken = ({ clientId, clientSecret, code, state, tokenEndpoint, fetch = window.fetch }) => {
   const payload = {
     client_id: clientId,
     code,
     grant_type: 'authorization_code',
-    code_verifier: verifier
+    code_verifier: state.encodedVerifier,
+    redirect_uri: state.redirect_uri
   };
   if (clientSecret) {
     payload.client_secret = clientSecret

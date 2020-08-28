@@ -3,8 +3,8 @@ import authorize from './helpers/authorize'
 import { getCodeFromLocation } from './helpers/getCodeFromLocation'
 import { fetchToken } from './helpers/fetchToken'
 import { removeCodeFromLocation } from './helpers/removeCodeFromLocation'
-import { getVerifierFromStorage } from './helpers/getVerifierFromStorage'
-import { removeVerifierFromStorage } from './helpers/removeVerifierFromStorage'
+import { getVerifierState } from './helpers/getVerifierState'
+import { removeStateFromStorage } from './helpers/removeStateFromStorage'
 
 export default ({
   clientId,
@@ -55,15 +55,15 @@ export default ({
       useEffect(() => {
         if (!token) {
           const code = getCodeFromLocation({ location: window.location })
-          const verifier = getVerifierFromStorage({ clientId, storage })
-          if (code && verifier) {
+          const state = getVerifierState({ clientId, storage })
+          if (code && state) {
             fetchToken({
-              clientId, clientSecret, tokenEndpoint, code, verifier, fetch
+              clientId, clientSecret, tokenEndpoint, code, state, fetch
             })
             .then(setToken)
             .then(() => {
               removeCodeFromLocation()
-              removeVerifierFromStorage({ clientId, storage })  
+              removeStateFromStorage({ clientId, storage })  
             })
             .catch(e => {
               console.error(e)
