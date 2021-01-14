@@ -14,7 +14,8 @@ export default ({
   tokenEndpoint = `${provider}/token`,
   storage = sessionStorage,
   fetch = window.fetch,
-  busyIndicator = <>logging in...</>
+  busyIndicator = <>logging in...</>,
+  redirect_uri = window.location.toString()
 }) => {
 
   const context = createContext({})
@@ -76,7 +77,7 @@ export default ({
       const ensureAuthenticated = () => {
         const code = getCodeFromLocation({ location: window.location })
         if (!token && !code) {
-          authorize({provider, clientId, scopes})
+          authorize({provider, clientId, scopes, redirect_uri})
         }
       }
 
