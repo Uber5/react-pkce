@@ -7,10 +7,9 @@ export default function authorize({
   provider,
   clientId,
   scopes,
-  storage = sessionStorage
+  storage = sessionStorage,
+  redirect_uri
 }) {
-
-  const redirect_uri = window.location.toString()
 
   const encodedVerifier = base64URLEncode(createCodeVerifier())
   storage.setItem(

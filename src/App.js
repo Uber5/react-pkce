@@ -10,6 +10,7 @@ const {AuthContext, Authenticated, useToken} = createAuthContext({
   clientSecret,
   provider,
   // tokenEndpoint: 'http://localhost:3020/token' // If token endpoint is not "provider + '/token'"
+  // redirect_uri: "http://localhost:3001/" // If your redirect_uri is not just back to the current page
 })
 
 function ProtectedStuff() {
